@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import {
   AirVent,
@@ -9,27 +10,32 @@ import {
   DoorClosed,
   DraftingCompass,
   Fan,
+  FileText,
   Filter,
   Gauge,
   LayoutPanelTop,
+  MessageCircle,
   MonitorCog,
   PackageCheck,
   PackageSearch,
+  ShieldCheck,
   SquareDot,
   Wind,
   type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Reveal, SectionHeading } from "@/components/reveal";
 import { solutions, type Solution } from "@/lib/data";
+import { site } from "@/lib/site";
+import { cn } from "@/lib/utils";
 
 const iconMap: Record<string, LucideIcon> = {
   DraftingCompass,
@@ -47,58 +53,17 @@ const iconMap: Record<string, LucideIcon> = {
   PackageSearch,
 };
 
-function SolutionDialog({ solution }: { solution: Solution }) {
-  const Icon = iconMap[solution.icon] ?? Building2;
-  return (
-    <DialogContent className="max-h-[88vh] overflow-y-auto sm:max-w-2xl">
-      <DialogHeader className="text-left">
-        <div className="flex items-center gap-3">
-          <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-secondary text-primary">
-            <Icon className="size-5" aria-hidden />
-          </span>
-          <DialogTitle className="font-heading text-xl leading-snug">
-            {solution.title}
-          </DialogTitle>
-        </div>
-        <DialogDescription className="sr-only">
-          Technical overview of {solution.title} offered by Cleanox.
-        </DialogDescription>
-      </DialogHeader>
-      <div className="overflow-hidden rounded-xl">
-        <Image
-          src={solution.image}
-          alt={`${solution.title} — representative system view`}
-          width={760}
-          height={428}
-          className="h-auto w-full object-cover"
-          loading="lazy"
-        />
-      </div>
-      <p className="text-sm leading-relaxed text-foreground/80">{solution.description}</p>
-      <ul className="space-y-2" aria-label={`Key aspects of ${solution.title}`}>
-        {solution.points.map((point) => (
-          <li key={point} className="flex gap-2.5 text-sm text-foreground/80">
-            <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-brand-green" aria-hidden />
-            {point}
-          </li>
-        ))}
-      </ul>
-      <p className="text-xs leading-relaxed text-muted-foreground">
-        Specifications shown are typical industry configurations. Every Cleanox system is
-        engineered and documented against your project&apos;s classification and process
-        requirements.
-      </p>
-      <Button asChild className="w-full rounded-full font-semibold sm:w-auto">
-        <a href="#contact">
-          Request Technical Details
-          <ArrowRight className="size-4" aria-hidden />
-        </a>
-      </Button>
-    </DialogContent>
-  );
-}
-
 export function SolutionsSection() {
+  const [selectedSolution, setSelectedSolution] = useState<Solution | null>(null);
+
+  const activeIcon = selectedSolution ? iconMap[selectedSolution.icon] ?? Building2 : Building2;
+  const ActiveIconComponent = activeIcon;
+
+  // Find 3 other related solutions for the cross-navigation strip
+  const relatedSolutions = selectedSolution
+    ? solutions.filter((s) => s.slug !== selectedSolution.slug).slice(0, 3)
+    : [];
+
   return (
     <section
       id="solutions"
@@ -117,56 +82,191 @@ export function SolutionsSection() {
             const Icon = iconMap[s.icon] ?? Building2;
             return (
               <Reveal key={s.slug} delay={(i % 4) * 0.05} className="h-full">
-                <Dialog>
-                  <div
-                    id={`solution-${s.slug}`}
-                    className="group h-full scroll-mt-20 overflow-hidden rounded-xl border bg-card shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/35 hover:shadow-lg"
+                <div
+                  id={`solution-${s.slug}`}
+                  className="group h-full scroll-mt-20 overflow-hidden rounded-xl border bg-card shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setSelectedSolution(s)}
+                    className="flex h-full w-full flex-col text-left focus-visible:outline-2 focus-visible:outline-ring"
+                    aria-label={`View detailed technical specifications for ${s.title}`}
                   >
-                    <DialogTrigger asChild>
-                      <button
-                        type="button"
-                        className="flex h-full w-full flex-col text-left focus-visible:outline-2 focus-visible:outline-ring"
-                        aria-label={`Learn more about ${s.title}`}
-                      >
-                        <span className="relative block aspect-[16/10] overflow-hidden">
-                          <Image
-                            src={s.image}
-                            alt={`${s.title} — representative view`}
-                            fill
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                            className="object-cover transition-transform duration-400 group-hover:scale-104"
-                            loading="lazy"
-                          />
-                          <span className="absolute inset-0 bg-gradient-to-t from-navy-deep/50 via-transparent to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
-                          <span className="absolute bottom-2.5 left-2.5 inline-flex size-8 items-center justify-center rounded-lg bg-white/95 text-primary shadow-sm">
-                            <Icon className="size-4" aria-hidden />
-                          </span>
-                        </span>
-                        <span className="flex flex-1 flex-col p-4">
-                          <span className="font-heading text-sm font-semibold leading-snug text-foreground">
-                            {s.title}
-                          </span>
-                          <span className="mt-1.5 line-clamp-2 text-[0.79rem] leading-relaxed text-muted-foreground">
-                            {s.short}
-                          </span>
-                          <span className="mt-auto inline-flex items-center gap-1.5 pt-3 text-[0.79rem] font-semibold text-primary">
-                            Learn more
-                            <ArrowRight
-                              className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
-                              aria-hidden
-                            />
-                          </span>
-                        </span>
-                      </button>
-                    </DialogTrigger>
-                  </div>
-                  <SolutionDialog solution={s} />
-                </Dialog>
+                    <span className="relative block aspect-[16/10] overflow-hidden">
+                      <Image
+                        src={s.image}
+                        alt={`${s.title} — representative view`}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        className="object-cover transition-transform duration-400 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                      <span className="absolute inset-0 bg-gradient-to-t from-navy-deep/60 via-transparent to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+                      <span className="absolute bottom-2.5 left-2.5 inline-flex size-8 items-center justify-center rounded-lg bg-white/95 text-primary shadow-sm">
+                        <Icon className="size-4" aria-hidden />
+                      </span>
+                    </span>
+                    <span className="flex flex-1 flex-col p-4">
+                      <span className="font-heading text-sm font-semibold leading-snug text-foreground">
+                        {s.title}
+                      </span>
+                      <span className="mt-1.5 line-clamp-2 text-[0.79rem] leading-relaxed text-muted-foreground">
+                        {s.short}
+                      </span>
+                      <span className="mt-auto inline-flex items-center gap-1.5 pt-3 text-[0.79rem] font-semibold text-primary">
+                        Technical Specs
+                        <ArrowRight
+                          className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
+                          aria-hidden
+                        />
+                      </span>
+                    </span>
+                  </button>
+                </div>
               </Reveal>
             );
           })}
         </div>
       </div>
+
+      {/* Right Slide-over Sheet Panel */}
+      <Sheet open={!!selectedSolution} onOpenChange={(open) => !open && setSelectedSolution(null)}>
+        <SheetContent
+          side="right"
+          className="w-full sm:max-w-xl p-0 overflow-y-auto z-50 flex flex-col h-full bg-card border-l shadow-2xl"
+        >
+          {selectedSolution && (
+            <div className="flex flex-col min-h-full">
+              {/* Header Hero Image with Gradient Overlay */}
+              <div className="relative aspect-[16/9] w-full shrink-0 overflow-hidden bg-navy-deep">
+                <Image
+                  src={selectedSolution.image}
+                  alt={`${selectedSolution.title} engineering view`}
+                  fill
+                  priority
+                  className="object-cover opacity-85"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
+                
+                {/* Floating badge over image */}
+                <div className="absolute bottom-4 left-6 right-6 flex items-center gap-3">
+                  <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary text-white shadow-md ring-2 ring-white/20">
+                    <ActiveIconComponent className="size-5.5" aria-hidden />
+                  </span>
+                  <div>
+                    <span className="block text-[0.68rem] font-bold uppercase tracking-widest text-primary">
+                      CleanOx Engineered System
+                    </span>
+                    <SheetTitle className="font-heading text-lg sm:text-xl font-bold text-foreground leading-tight">
+                      {selectedSolution.title}
+                    </SheetTitle>
+                  </div>
+                </div>
+              </div>
+
+              {/* Sheet Body Content */}
+              <div className="flex-1 p-6 space-y-6">
+                <SheetHeader className="p-0 text-left">
+                  <SheetDescription className="text-sm leading-relaxed text-foreground/85">
+                    {selectedSolution.description}
+                  </SheetDescription>
+                </SheetHeader>
+
+                {/* Technical Highlights */}
+                <div className="rounded-xl border bg-secondary/30 p-4 sm:p-5">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-foreground/90">
+                    Engineering Specifications & Highlights
+                  </h4>
+                  <ul className="mt-3 space-y-2.5" aria-label={`Key aspects of ${selectedSolution.title}`}>
+                    {selectedSolution.points.map((point) => (
+                      <li key={point} className="flex items-start gap-2.5 text-xs sm:text-sm text-foreground/85">
+                        <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-brand-green" aria-hidden />
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Regulatory & Standards Compliance Badges */}
+                <div className="space-y-2">
+                  <p className="text-[0.68rem] font-bold uppercase tracking-wider text-muted-foreground">
+                    Applicable Regulatory & Design Standards
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {["ISO 14644-1/4", "EU GMP Annex 1", "US FDA 21 CFR Part 211", "WHO TRS 961", "Schedule M"].map(
+                      (std) => (
+                        <span
+                          key={std}
+                          className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2.5 py-1 text-[0.72rem] font-medium text-foreground/80"
+                        >
+                          <ShieldCheck className="size-3 text-brand-green" aria-hidden />
+                          {std}
+                        </span>
+                      )
+                    )}
+                  </div>
+                </div>
+
+                {/* Related Systems Switcher Strip */}
+                {relatedSolutions.length > 0 && (
+                  <div className="border-t pt-5">
+                    <p className="text-xs font-semibold text-muted-foreground mb-3">
+                      Interconnected Cleanroom Systems:
+                    </p>
+                    <div className="grid grid-cols-3 gap-2">
+                      {relatedSolutions.map((rel) => {
+                        const RelIcon = iconMap[rel.icon] ?? Building2;
+                        return (
+                          <button
+                            key={rel.slug}
+                            type="button"
+                            onClick={() => setSelectedSolution(rel)}
+                            className="flex flex-col items-center justify-center p-2 rounded-lg border bg-background/50 hover:bg-secondary/60 hover:border-primary/40 text-center transition-all group"
+                          >
+                            <RelIcon className="size-4 text-primary group-hover:scale-110 transition-transform mb-1" />
+                            <span className="text-[0.68rem] font-medium text-foreground line-clamp-2 leading-tight">
+                              {rel.title}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Sticky Action Footer */}
+              <div className="sticky bottom-0 border-t bg-card/95 backdrop-blur-md p-5 flex flex-col sm:flex-row gap-3">
+                <SheetClose asChild>
+                  <Button asChild className="flex-1 rounded-full font-semibold shadow-md shadow-primary/20">
+                    <a href="#contact">
+                      Request Technical BOQ & Quote
+                      <ArrowRight className="size-4 ml-1" aria-hidden />
+                    </a>
+                  </Button>
+                </SheetClose>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="rounded-full font-semibold border-[#25d366]/40 text-[#1da851] hover:bg-[#25d366]/10"
+                >
+                  <a
+                    href={`https://wa.me/${site.contact.whatsapp}?text=${encodeURIComponent(
+                      `Hello CleanOx, I am interested in technical details for ${selectedSolution.title}.`
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <MessageCircle className="size-4 mr-1 text-[#25d366]" aria-hidden />
+                    WhatsApp
+                  </a>
+                </Button>
+              </div>
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
     </section>
   );
 }
+
