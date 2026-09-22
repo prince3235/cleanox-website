@@ -2,6 +2,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { HeroSection } from "@/components/hero-section";
 import { AboutSection } from "@/components/about-section";
+import { CleanroomAnatomySection } from "@/components/cleanroom-anatomy";
 import { SolutionsSection } from "@/components/solutions-section";
 import { IndustriesSection } from "@/components/industries-section";
 import { ProcessSection } from "@/components/process-section";
@@ -53,7 +54,9 @@ export default function Home() {
         <HeroSection />
         <WaveDarkToLight />
         <AboutSection />
-        {/* About → Solutions: light background to white */}
+        {/* Interactive Blueprint Anatomy */}
+        <CleanroomAnatomySection />
+        {/* Solutions: modular envelope & equipment */}
         <SolutionsSection />
         {/* Solutions → Industries: white to haze */}
         <WaveWhiteToHaze />

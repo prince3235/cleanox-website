@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { Menu, Moon, Phone, Sun, X } from "lucide-react";
+import { Menu, Moon, Phone, Search, Sun, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -13,12 +13,16 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { CommandPalette } from "@/components/command-palette";
+import { QuickQuoteModal } from "@/components/quick-quote-modal";
 import { nav, site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [quoteOpen, setQuoteOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const { resolvedTheme, setTheme } = useTheme();
 
@@ -125,13 +129,37 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
+          {/* Search Trigger (Ctrl + K) */}
+          <button
+            type="button"
+            onClick={() => setSearchOpen(true)}
+            aria-label="Search cleanroom solutions and standards (Ctrl + K)"
+            className={cn(
+              "flex items-center gap-2 rounded-full px-2.5 py-1.5 text-xs font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-ring cursor-pointer",
+              scrolled
+                ? "bg-muted/70 text-foreground/75 hover:bg-muted hover:text-foreground"
+                : "bg-white/10 text-white/85 backdrop-blur-sm hover:bg-white/20 hover:text-white"
+            )}
+          >
+            <Search className="size-3.5" aria-hidden />
+            <span className="hidden sm:inline">Search</span>
+            <kbd
+              className={cn(
+                "hidden rounded px-1.5 py-0.5 text-[10px] font-semibold tracking-wider uppercase sm:inline-block",
+                scrolled ? "bg-background/80 text-foreground/70 shadow-xs" : "bg-black/25 text-white/90"
+              )}
+            >
+              ⌘K
+            </kbd>
+          </button>
+
           {/* Theme toggle */}
           <button
             type="button"
             onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
             aria-label="Toggle dark mode"
             className={cn(
-              "inline-flex size-9 items-center justify-center rounded-full transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-ring",
+              "inline-flex size-9 items-center justify-center rounded-full transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-ring cursor-pointer",
               scrolled
                 ? "text-foreground/60 hover:bg-muted hover:text-foreground"
                 : "text-white/70 hover:bg-white/10 hover:text-white"
@@ -141,17 +169,18 @@ export function SiteHeader() {
             <Moon className="size-4.5 dark:hidden" aria-hidden />
           </button>
 
-          {/* CTA — restrained, professional */}
+          {/* CTA — opens quick quote / callback modal */}
           <Button
-            asChild
+            type="button"
+            onClick={() => setQuoteOpen(true)}
             className={cn(
-              "hidden h-9 rounded-full px-5 text-sm font-semibold transition-all duration-200 sm:inline-flex",
+              "hidden h-9 rounded-full px-5 text-sm font-semibold transition-all duration-200 sm:inline-flex cursor-pointer",
               scrolled
                 ? "bg-navy text-white shadow-none hover:bg-navy/85 dark:bg-primary dark:hover:bg-primary/85"
                 : "border border-white/35 bg-transparent text-white shadow-none backdrop-blur-sm hover:bg-white/10 hover:border-white/50"
             )}
           >
-            <a href="#contact">Request a Quote</a>
+            Request a Quote
           </Button>
 
           {/* Mobile menu trigger */}
@@ -161,7 +190,7 @@ export function SiteHeader() {
                 type="button"
                 aria-label="Open menu"
                 className={cn(
-                  "inline-flex size-9 items-center justify-center rounded-full transition-colors duration-200 lg:hidden",
+                  "inline-flex size-9 items-center justify-center rounded-full transition-colors duration-200 lg:hidden cursor-pointer",
                   scrolled
                     ? "text-foreground hover:bg-muted"
                     : "text-white hover:bg-white/10"
@@ -191,6 +220,22 @@ export function SiteHeader() {
                   </div>
                 </SheetTitle>
               </SheetHeader>
+              <div className="p-3 border-b">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
+                    setSearchOpen(true);
+                  }}
+                  className="flex w-full items-center justify-between rounded-lg border border-input bg-background/50 px-3 py-2 text-xs text-muted-foreground"
+                >
+                  <span className="flex items-center gap-2">
+                    <Search className="size-3.5 text-primary" />
+                    Search solutions, standards, specs...
+                  </span>
+                  <kbd className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-mono">⌘K</kbd>
+                </button>
+              </div>
               <nav aria-label="Mobile" className="flex-1 overflow-y-auto px-3 py-4">
                 <ul className="space-y-1">
                   {nav.map((item) => (
@@ -216,10 +261,15 @@ export function SiteHeader() {
                 </ul>
               </nav>
               <div className="space-y-3 border-t px-5 py-4 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
-                <Button asChild className="h-11 w-full rounded-full bg-navy font-semibold text-white hover:bg-navy/85 dark:bg-primary">
-                  <a href="#contact" onClick={() => setOpen(false)}>
-                    Request a Quote
-                  </a>
+                <Button
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
+                    setQuoteOpen(true);
+                  }}
+                  className="h-11 w-full rounded-full bg-navy font-semibold text-white hover:bg-navy/85 dark:bg-primary cursor-pointer"
+                >
+                  Request a Quote
                 </Button>
                 <a
                   href={`tel:${site.contact.phoneHref}`}
@@ -232,6 +282,10 @@ export function SiteHeader() {
           </Sheet>
         </div>
       </div>
+
+      {/* Global Command Palette (Ctrl+K) and Quick Quote Modal */}
+      <CommandPalette open={searchOpen} onOpenChange={setSearchOpen} />
+      <QuickQuoteModal open={quoteOpen} onOpenChange={setQuoteOpen} />
     </header>
   );
 }

@@ -2,6 +2,7 @@
 
 import { Award, BadgeCheck, FileBadge2, FileCheck2 } from "lucide-react";
 import { Reveal, SectionHeading } from "@/components/reveal";
+import { StandardsMatrixSection } from "@/components/standards-matrix";
 
 const standards = [
   {
@@ -76,6 +77,11 @@ export function QualitySection() {
             </Reveal>
           ))}
         </div>
+
+        {/* Interactive Standards Cross-Reference Matrix (ISO vs EU GMP vs US Fed 209E) */}
+        <Reveal delay={0.07}>
+          <StandardsMatrixSection />
+        </Reveal>
 
         {/* Validation approach */}
         <Reveal delay={0.08}>

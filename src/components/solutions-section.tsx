@@ -53,11 +53,41 @@ const iconMap: Record<string, LucideIcon> = {
   PackageSearch,
 };
 
+const categories = [
+  { id: "all", label: "All Solutions (12)" },
+  { id: "hvac", label: "HVAC & Filtration (4)" },
+  { id: "envelope", label: "Modular Envelope (3)" },
+  { id: "transfer", label: "Transfer & Access (2)" },
+  { id: "turnkey", label: "Turnkey & Monitoring (3)" },
+] as const;
+
+const categoryMapping: Record<string, string> = {
+  "hvac-ahu": "hvac",
+  "hepa-filtration": "hvac",
+  "ffu-systems": "hvac",
+  "laminar-air-flow": "hvac",
+  "cleanroom-panels": "envelope",
+  "cleanroom-doors": "envelope",
+  "controlled-environment": "envelope",
+  "pass-box": "transfer",
+  "air-shower": "transfer",
+  "cleanroom-design": "turnkey",
+  ems: "turnkey",
+  bms: "turnkey",
+};
+
 export function SolutionsSection() {
   const [selectedSolution, setSelectedSolution] = useState<Solution | null>(null);
+  const [activeCategory, setActiveCategory] = useState<string>("all");
 
   const activeIcon = selectedSolution ? iconMap[selectedSolution.icon] ?? Building2 : Building2;
   const ActiveIconComponent = activeIcon;
+
+  // Filter solutions by category
+  const filteredSolutions =
+    activeCategory === "all"
+      ? solutions
+      : solutions.filter((s) => categoryMapping[s.slug] === activeCategory);
 
   // Find 3 other related solutions for the cross-navigation strip
   const relatedSolutions = selectedSolution
@@ -77,8 +107,27 @@ export function SolutionsSection() {
           description="From the AHU to the last particle sensor — each system below is specified, supplied, installed and documented to work together as a single controlled environment."
         />
 
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {solutions.map((s, i) => {
+        {/* Category Filter Pills */}
+        <div className="mt-8 flex gap-2 overflow-x-auto pb-2 scrollbar-slim">
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              type="button"
+              onClick={() => setActiveCategory(cat.id)}
+              className={cn(
+                "h-9 shrink-0 rounded-full border px-4 text-xs font-semibold transition-all duration-150 focus-visible:outline-2",
+                activeCategory === cat.id
+                  ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                  : "border-border bg-card text-foreground/75 hover:border-primary/40 hover:text-foreground"
+              )}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {filteredSolutions.map((s, i) => {
             const Icon = iconMap[s.icon] ?? Building2;
             return (
               <Reveal key={s.slug} delay={(i % 4) * 0.05} className="h-full">

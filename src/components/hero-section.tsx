@@ -80,31 +80,95 @@ export function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/95 via-transparent to-navy-deep/35" />
       </div>
 
-      {/* Ambient airflow lines echoing the logo mark */}
+      {/* Ambient downward laminar airflow streams & particle sweeps */}
       {!reduce && (
-        <svg
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-56 w-full opacity-20"
-          viewBox="0 0 1440 220"
-          preserveAspectRatio="none"
-          aria-hidden
-        >
-          {[0, 1, 2].map((i) => (
-            <motion.path
+        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+          {/* Vertical laminar flow paths */}
+          <svg className="absolute inset-0 h-full w-full opacity-25" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="heroStreamGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#29a8e0" stopOpacity="0.8" />
+                <stop offset="60%" stopColor="#12a6b4" stopOpacity="0.4" />
+                <stop offset="100%" stopColor="#29a8e0" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            {[80, 220, 380, 540, 700, 860, 1020, 1180, 1340].map((x, idx) => (
+              <motion.line
+                key={x}
+                x1={x}
+                y1="-80"
+                x2={x}
+                y2="100%"
+                stroke="url(#heroStreamGrad)"
+                strokeWidth={idx % 2 === 0 ? 1.5 : 1}
+                strokeDasharray="12 48"
+                initial={{ strokeDashoffset: 0 }}
+                animate={{ strokeDashoffset: -240 }}
+                transition={{
+                  duration: 5 + (idx % 4) * 1.5,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+              />
+            ))}
+          </svg>
+
+          {/* Subtle floating airborne micro-particles */}
+          {[
+            { top: "25%", left: "18%", size: 3, dur: 7, delay: 0 },
+            { top: "45%", left: "38%", size: 2.5, dur: 9, delay: 1.5 },
+            { top: "65%", left: "62%", size: 4, dur: 8, delay: 0.8 },
+            { top: "35%", left: "78%", size: 3, dur: 10, delay: 2 },
+            { top: "55%", left: "88%", size: 2, dur: 6.5, delay: 1.2 },
+            { top: "75%", left: "28%", size: 2.5, dur: 8.5, delay: 2.5 },
+          ].map((pt, i) => (
+            <motion.div
               key={i}
-              d={`M -50 ${150 - i * 38} C 320 ${108 - i * 26}, 640 ${185 - i * 30}, 920 ${128 - i * 22} S 1340 ${75 - i * 18}, 1510 ${115 - i * 20}`}
-              fill="none"
-              stroke="var(--brand-sky)"
-              strokeWidth={1.2}
-              strokeDasharray="5 12"
-              initial={{ strokeDashoffset: 0, opacity: 0 }}
-              animate={{ strokeDashoffset: -180, opacity: [0, 0.8, 0.8, 0.3] }}
+              className="absolute rounded-full bg-brand-sky/40 blur-[0.5px] shadow-[0_0_8px_rgba(41,168,224,0.6)]"
+              style={{
+                top: pt.top,
+                left: pt.left,
+                width: pt.size,
+                height: pt.size,
+              }}
+              animate={{
+                y: [0, 45, 0],
+                opacity: [0.2, 0.7, 0.2],
+                scale: [0.8, 1.2, 0.8],
+              }}
               transition={{
-                strokeDashoffset: { duration: 12 + i * 2.5, repeat: Infinity, ease: "linear" },
-                opacity: { duration: 2, delay: 0.5 + i * 0.3 },
+                duration: pt.dur,
+                repeat: Infinity,
+                delay: pt.delay,
+                ease: "easeInOut",
               }}
             />
           ))}
-        </svg>
+
+          {/* Horizontal ambient wave lines */}
+          <svg
+            className="absolute inset-x-0 bottom-0 h-56 w-full opacity-20"
+            viewBox="0 0 1440 220"
+            preserveAspectRatio="none"
+          >
+            {[0, 1, 2].map((i) => (
+              <motion.path
+                key={i}
+                d={`M -50 ${150 - i * 38} C 320 ${108 - i * 26}, 640 ${185 - i * 30}, 920 ${128 - i * 22} S 1340 ${75 - i * 18}, 1510 ${115 - i * 20}`}
+                fill="none"
+                stroke="var(--brand-sky)"
+                strokeWidth={1.2}
+                strokeDasharray="5 12"
+                initial={{ strokeDashoffset: 0, opacity: 0 }}
+                animate={{ strokeDashoffset: -180, opacity: [0, 0.8, 0.8, 0.3] }}
+                transition={{
+                  strokeDashoffset: { duration: 12 + i * 2.5, repeat: Infinity, ease: "linear" },
+                  opacity: { duration: 2, delay: 0.5 + i * 0.3 },
+                }}
+              />
+            ))}
+          </svg>
+        </div>
       )}
 
       {/* Content */}
