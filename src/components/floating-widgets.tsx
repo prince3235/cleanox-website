@@ -18,7 +18,7 @@ export function FloatingWidgets() {
 
   return (
     <div
-      className="fixed right-4 z-50 flex flex-col items-center gap-2"
+      className="fixed right-4 z-50 flex flex-col items-center gap-2 lg:bottom-auto lg:right-6"
       style={{ bottom: "max(1.25rem, env(safe-area-inset-bottom))" }}
       role="complementary"
       aria-label="Quick contact"
@@ -38,16 +38,16 @@ export function FloatingWidgets() {
         <ArrowUp className="size-4" aria-hidden />
       </button>
 
-      {/* Phone */}
+      {/* Phone — desktop only (mobile has the sticky bottom bar) */}
       <a
         href={`tel:${site.contact.phoneHref}`}
         aria-label={`Call ${site.name}: ${site.contact.phone}`}
-        className="inline-flex size-10 items-center justify-center rounded-full bg-navy/90 text-white shadow-md backdrop-blur-sm transition-all duration-200 hover:bg-navy hover:scale-105"
+        className="hidden lg:inline-flex size-10 items-center justify-center rounded-full bg-navy/90 text-white shadow-md backdrop-blur-sm transition-all duration-200 hover:bg-navy hover:scale-105"
       >
         <Phone className="size-4.5" aria-hidden />
       </a>
 
-      {/* WhatsApp — slightly larger but restrained; no infinite ping */}
+      {/* WhatsApp — slow breathing glow instead of aggressive ping */}
       <a
         href={`https://wa.me/${site.contact.whatsapp}?text=${encodeURIComponent(
           "Hello Cleanox, I would like to discuss a cleanroom requirement."
@@ -55,7 +55,7 @@ export function FloatingWidgets() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat with Cleanox on WhatsApp"
-        className="group relative inline-flex size-11 items-center justify-center rounded-full bg-[#25d366] text-white shadow-md transition-all duration-200 hover:scale-105 hover:bg-[#20b958]"
+        className="group relative hidden lg:inline-flex size-11 items-center justify-center rounded-full bg-[#25d366] text-white shadow-md transition-all duration-200 hover:scale-105 hover:bg-[#20b958] whatsapp-breathe"
       >
         <MessageCircle className="size-5" aria-hidden />
         {/* Tooltip on hover — desktop only */}
@@ -66,3 +66,4 @@ export function FloatingWidgets() {
     </div>
   );
 }
+

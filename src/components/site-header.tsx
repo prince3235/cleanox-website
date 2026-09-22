@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
   const { resolvedTheme, setTheme } = useTheme();
 
   useEffect(() => {
@@ -26,6 +27,26 @@ export function SiteHeader() {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Scroll-spy: highlight nav item for the section closest to top of viewport
+  useEffect(() => {
+    const sectionIds = nav.map((item) => item.href.replace("#", ""));
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: "-20% 0px -70% 0px", threshold: 0 }
+    );
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
   }, []);
 
   return (
@@ -72,26 +93,35 @@ export function SiteHeader() {
 
         {/* Desktop nav */}
         <nav aria-label="Primary" className="hidden items-center gap-0.5 lg:flex">
-          {nav.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "group relative rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200",
-                scrolled
-                  ? "text-foreground/75 hover:bg-muted hover:text-foreground"
-                  : "text-slate-100/90 hover:text-white"
-              )}
-            >
-              {item.label}
-              <span
+          {nav.map((item) => {
+            const isActive = activeSection === item.href.replace("#", "");
+            return (
+              <a
+                key={item.href}
+                href={item.href}
+                aria-current={isActive ? "location" : undefined}
                 className={cn(
-                  "absolute inset-x-3 -bottom-px h-0.5 origin-left scale-x-0 rounded-full transition-transform duration-200 group-hover:scale-x-100",
-                  scrolled ? "bg-primary" : "bg-brand-sky"
+                  "group relative rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200",
+                  scrolled
+                    ? isActive
+                      ? "text-foreground"
+                      : "text-foreground/70 hover:bg-muted hover:text-foreground"
+                    : isActive
+                    ? "text-white"
+                    : "text-slate-100/85 hover:text-white"
                 )}
-              />
-            </a>
-          ))}
+              >
+                {item.label}
+                <span
+                  className={cn(
+                    "absolute inset-x-3 -bottom-px h-0.5 rounded-full transition-transform duration-200",
+                    scrolled ? "bg-primary" : "bg-brand-sky",
+                    isActive ? "scale-x-100" : "origin-left scale-x-0 group-hover:scale-x-100"
+                  )}
+                />
+              </a>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-2">

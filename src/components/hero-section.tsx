@@ -1,10 +1,59 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, ChevronDown, ShieldCheck } from "lucide-react";
+import { motion, useReducedMotion, useInView } from "framer-motion";
+import { useRef, useEffect, useState } from "react";
+import { ArrowRight, ChevronDown, MessageCircle, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { standards } from "@/lib/site";
+import { site } from "@/lib/site";
+
+/** Animated number counter — counts up from 0 to target when in view. */
+function AnimatedCounter({
+  target,
+  suffix = "",
+  prefix = "",
+  duration = 1800,
+}: {
+  target: number;
+  suffix?: string;
+  prefix?: string;
+  duration?: number;
+}) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const reduce = useReducedMotion();
+
+  useEffect(() => {
+    if (!inView || reduce) {
+      setCount(target);
+      return;
+    }
+    const start = performance.now();
+    const raf = (now: number) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      // ease-out-cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.round(eased * target));
+      if (progress < 1) requestAnimationFrame(raf);
+    };
+    requestAnimationFrame(raf);
+  }, [inView, target, duration, reduce]);
+
+  return (
+    <span ref={ref} className="tabular-nums">
+      {prefix}{count}{suffix}
+    </span>
+  );
+}
+
+const heroStats = [
+  { value: 5, suffix: "+", label: "GMP Standards Referenced" },
+  { value: 9, suffix: "", label: "Cleanroom Classes (ISO 5–9)" },
+  { value: 100, suffix: "%", label: "Documentation on Handover" },
+];
 
 export function HeroSection() {
   const reduce = useReducedMotion();
@@ -25,24 +74,24 @@ export function HeroSection() {
           sizes="100vw"
           className="object-cover object-center"
         />
-        {/* Left-to-right gradient — keeps text readable without fully hiding photo */}
-        <div className="absolute inset-0 bg-gradient-to-r from-navy-deep/92 via-navy-deep/72 to-navy/25" />
-        {/* Bottom vignette to bleed into trust strip */}
-        <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/90 via-transparent to-navy-deep/30" />
+        {/* Gradient — stronger on left for text legibility, opens up on right */}
+        <div className="absolute inset-0 bg-gradient-to-r from-navy-deep/96 via-navy-deep/78 to-navy/20" />
+        {/* Bottom vignette to blend into the stats bar */}
+        <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/95 via-transparent to-navy-deep/35" />
       </div>
 
-      {/* Ambient airflow lines echoing the logo mark — simplified, 3 paths */}
+      {/* Ambient airflow lines echoing the logo mark */}
       {!reduce && (
         <svg
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-48 w-full opacity-20"
-          viewBox="0 0 1440 200"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-56 w-full opacity-20"
+          viewBox="0 0 1440 220"
           preserveAspectRatio="none"
           aria-hidden
         >
           {[0, 1, 2].map((i) => (
             <motion.path
               key={i}
-              d={`M -50 ${140 - i * 36} C 320 ${100 - i * 24}, 620 ${180 - i * 28}, 900 ${120 - i * 20} S 1320 ${70 - i * 16}, 1500 ${110 - i * 18}`}
+              d={`M -50 ${150 - i * 38} C 320 ${108 - i * 26}, 640 ${185 - i * 30}, 920 ${128 - i * 22} S 1340 ${75 - i * 18}, 1510 ${115 - i * 20}`}
               fill="none"
               stroke="var(--brand-sky)"
               strokeWidth={1.2}
@@ -59,7 +108,7 @@ export function HeroSection() {
       )}
 
       {/* Content */}
-      <div className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-4 pb-20 pt-28 sm:px-6 sm:pt-32 lg:px-8">
+      <div className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-4 pb-24 pt-28 sm:px-6 sm:pt-32 lg:px-8">
         {/* Eyebrow badge */}
         <motion.div
           initial={reduce ? false : { opacity: 0, y: 12 }}
@@ -74,14 +123,18 @@ export function HeroSection() {
           Pharmaceutical Cleanroom Engineering
         </motion.div>
 
-        {/* Headline */}
+        {/* Headline — fluid size */}
         <motion.h1
-          initial={reduce ? false : { opacity: 0, y: 20 }}
+          initial={reduce ? false : { opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.65, delay: 0.1, ease: "easeOut" }}
-          className="mt-5 max-w-3xl font-heading text-4xl font-bold leading-[1.1] text-white sm:text-5xl lg:text-[3.5rem]"
+          className="fluid-h1 mt-5 max-w-3xl font-heading font-bold leading-[1.07] tracking-tight text-white"
         >
-          Engineering Contamination-Free Environments for Pharma Manufacturing
+          Engineering{" "}
+          <span className="bg-gradient-to-r from-brand-sky to-brand-teal bg-clip-text text-transparent">
+            Contamination-Free
+          </span>{" "}
+          Environments for Pharma Manufacturing
         </motion.h1>
 
         {/* Subline */}
@@ -89,7 +142,7 @@ export function HeroSection() {
           initial={reduce ? false : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.65, delay: 0.2, ease: "easeOut" }}
-          className="mt-5 max-w-xl text-base leading-relaxed text-slate-300 sm:text-lg"
+          className="fluid-lead mt-5 max-w-xl leading-relaxed text-slate-300"
         >
           Cleanox designs, builds and monitors cleanrooms for pharmaceutical and
           life-science manufacturers — from the first concept drawing to a documented,
@@ -105,7 +158,7 @@ export function HeroSection() {
         >
           <Button
             asChild
-            className="h-11 rounded-full bg-brand-blue px-7 text-sm font-semibold text-white shadow-lg shadow-brand-blue/25 hover:bg-brand-blue/90 hover:shadow-brand-blue/35"
+            className="h-12 rounded-full bg-brand-blue px-8 text-sm font-semibold text-white shadow-lg shadow-brand-blue/30 hover:bg-brand-blue/90 hover:shadow-brand-blue/40 hover:-translate-y-0.5 transition-all duration-200"
           >
             <a href="#contact">
               Request a Quote
@@ -115,10 +168,40 @@ export function HeroSection() {
           <Button
             asChild
             variant="outline"
-            className="h-11 rounded-full border-white/25 bg-white/5 px-7 text-sm font-semibold text-white backdrop-blur-sm hover:bg-white/10 hover:text-white hover:border-white/35"
+            className="h-12 rounded-full border-white/25 bg-white/5 px-8 text-sm font-semibold text-white backdrop-blur-sm hover:bg-white/10 hover:text-white hover:border-white/40 transition-all duration-200"
           >
             <a href="#solutions">Explore Our Solutions</a>
           </Button>
+          <a
+            href={`https://wa.me/${site.contact.whatsapp}?text=${encodeURIComponent(
+              "Hello Cleanox, I need a cleanroom for pharmaceutical manufacturing. Can we discuss?"
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-12 items-center gap-2.5 rounded-full border border-[#25d366]/35 bg-[#25d366]/10 px-8 text-sm font-semibold text-[#6de897] backdrop-blur-sm transition-all duration-200 hover:bg-[#25d366]/20 hover:border-[#25d366]/55 hover:text-white sm:hidden"
+            aria-label="Chat on WhatsApp"
+          >
+            <MessageCircle className="size-4.5" aria-hidden />
+            WhatsApp Us
+          </a>
+        </motion.div>
+
+        {/* Animated stats row */}
+        <motion.div
+          initial={reduce ? false : { opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.45, ease: "easeOut" }}
+          className="mt-12 flex flex-wrap gap-x-8 gap-y-4"
+          aria-label="Key figures"
+        >
+          {heroStats.map((s, i) => (
+            <div key={s.label} className="flex flex-col">
+              <p className="font-heading text-3xl font-bold text-white stat-glow sm:text-4xl">
+                <AnimatedCounter target={s.value} suffix={s.suffix} duration={1400 + i * 200} />
+              </p>
+              <p className="mt-0.5 text-xs font-medium text-slate-400">{s.label}</p>
+            </div>
+          ))}
         </motion.div>
       </div>
 
@@ -126,15 +209,15 @@ export function HeroSection() {
       <motion.a
         href="#about"
         aria-label="Scroll to learn more"
-        className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 text-white/50 transition-colors hover:text-white/80 md:block"
+        className="absolute bottom-[5.5rem] left-1/2 hidden -translate-x-1/2 text-white/40 transition-colors hover:text-white/70 md:block"
         animate={reduce ? {} : { y: [0, 6, 0] }}
         transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
       >
         <ChevronDown className="size-5" aria-hidden />
       </motion.a>
 
-      {/* Trust strip — standards referenced as design frameworks */}
-      <div className="relative border-t border-white/8 bg-navy-deep/75 backdrop-blur-sm">
+      {/* Trust strip — standards */}
+      <div className="relative border-t border-white/8 bg-navy-deep/80 backdrop-blur-sm">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:gap-8 lg:px-8">
           <p className="flex shrink-0 items-center gap-2 text-sm font-semibold text-white/90">
             <ShieldCheck className="size-4 text-brand-green" aria-hidden />
@@ -158,3 +241,4 @@ export function HeroSection() {
     </section>
   );
 }
+

@@ -41,6 +41,7 @@ export function SectionHeading({
   align = "center",
   dark = false,
   className,
+  id,
 }: {
   eyebrow: string;
   title: string;
@@ -48,6 +49,7 @@ export function SectionHeading({
   align?: "left" | "center";
   dark?: boolean;
   className?: string;
+  id?: string;
 }) {
   return (
     <div
@@ -69,8 +71,9 @@ export function SectionHeading({
       </Reveal>
       <Reveal delay={0.07}>
         <h2
+          id={id}
           className={cn(
-            "mt-3 font-heading text-3xl font-bold sm:text-4xl lg:text-[2.6rem] lg:leading-[1.15]",
+            "fluid-h2 mt-3 font-heading font-bold leading-[1.15]",
             dark ? "text-white" : "text-foreground"
           )}
         >

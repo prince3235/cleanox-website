@@ -3,6 +3,17 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ─────────────────────────────────────────────────────────────
+   FLUID TYPE SCALE — clamp(min, preferred, max)
+   Headings scale smoothly across all viewport widths.
+   ──────────────────────────────────────────────────────────── */
+@layer base {
+  .fluid-h1 { font-size: clamp(2rem, 4.5vw + 0.75rem, 3.5rem); }
+  .fluid-h2 { font-size: clamp(1.5rem, 3vw + 0.5rem, 2.5rem); }
+  .fluid-h3 { font-size: clamp(1.125rem, 1.5vw + 0.5rem, 1.5rem); }
+  .fluid-lead { font-size: clamp(1rem, 1.25vw + 0.25rem, 1.25rem); }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -231,6 +242,78 @@
   .logo-on-dark {
     /* Slight white glow to help white-bg logo sit on dark surface */
     filter: drop-shadow(0 0 0 transparent);
+  }
+
+  /* ── Scroll progress bar (thin line at the top of viewport) ── */
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--brand-blue), var(--brand-sky), var(--brand-teal));
+    transform-origin: left;
+    z-index: 9999;
+    pointer-events: none;
+  }
+
+  /* ── Wave SVG dividers ── */
+  .wave-divider {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+  }
+  .wave-divider svg {
+    display: block;
+    width: 100%;
+  }
+
+  /* ── Stat counter glow ── */
+  .stat-glow {
+    text-shadow: 0 0 20px color-mix(in srgb, var(--brand-sky) 40%, transparent);
+  }
+
+  /* ── Sticky mobile bottom bar ── */
+  .mobile-cta-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 48;
+    padding-bottom: env(safe-area-inset-bottom);
+    backdrop-filter: blur(12px) saturate(1.5);
+    -webkit-backdrop-filter: blur(12px) saturate(1.5);
+  }
+
+  /* ── Premium card hover (3D tilt via JS) ── */
+  .card-tilt {
+    transform-style: preserve-3d;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    will-change: transform;
+  }
+
+  /* ── Shimmer on card borders ── */
+  @keyframes shimmer-border {
+    0%   { background-position: 200% center; }
+    100% { background-position: -200% center; }
+  }
+  .shimmer-border {
+    background: linear-gradient(90deg,
+      var(--border) 0%,
+      color-mix(in srgb, var(--brand-sky) 60%, transparent) 50%,
+      var(--border) 100%
+    );
+    background-size: 200% auto;
+    animation: shimmer-border 2.5s linear infinite;
+  }
+
+  /* ── WhatsApp slow pulse (breathing glow, not aggressive ping) ── */
+  @keyframes whatsapp-breathe {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); }
+    50%       { box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); }
+  }
+  .whatsapp-breathe {
+    animation: whatsapp-breathe 4s ease-in-out infinite;
   }
 }
 

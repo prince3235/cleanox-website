@@ -11,6 +11,8 @@ import { ProjectsSection } from "@/components/projects-section";
 import { ResourcesSection } from "@/components/resources-section";
 import { ContactSection } from "@/components/contact-section";
 import { FloatingWidgets } from "@/components/floating-widgets";
+import { ScrollProgressBar, MobileCtaBar } from "@/components/scroll-progress";
+import { WaveDarkToLight, WaveLightToDark, WaveWhiteToHaze, WaveHazeToWhite } from "@/components/wave-divider";
 import { faqs, solutions } from "@/lib/data";
 import { site } from "@/lib/site";
 
@@ -44,21 +46,38 @@ const servicesJsonLd = {
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
+      <ScrollProgressBar />
       <SiteHeader />
       <main className="flex-1">
+        {/* Hero → About: dark navy fades into light background */}
         <HeroSection />
+        <WaveDarkToLight />
         <AboutSection />
+        {/* About → Solutions: light background to white */}
         <SolutionsSection />
+        {/* Solutions → Industries: white to haze */}
+        <WaveWhiteToHaze />
         <IndustriesSection />
+        {/* Industries → Process: haze to white */}
+        <WaveHazeToWhite />
         <ProcessSection />
+        {/* Process → Technical: white to haze-ish */}
         <TechnicalSection />
+        {/* Technical → Quality: to haze */}
         <QualitySection />
+        {/* Quality → Projects: haze to dark navy */}
+        <WaveLightToDark />
         <ProjectsSection />
+        {/* Projects → Resources: dark to white */}
+        <WaveDarkToLight />
         <ResourcesSection />
+        {/* Resources → Contact: white to haze */}
+        <WaveWhiteToHaze />
         <ContactSection />
       </main>
       <SiteFooter />
       <FloatingWidgets />
+      <MobileCtaBar />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}

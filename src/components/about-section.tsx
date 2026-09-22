@@ -28,6 +28,13 @@ const pillars = [
   },
 ];
 
+const aboutStats = [
+  { value: "Est. 2025", label: "Newly Founded" },
+  { value: "ISO 5–9", label: "Classification Range" },
+  { value: "5+", label: "Standards Referenced" },
+  { value: "100%", label: "Custom Engineering" },
+];
+
 export function AboutSection() {
   return (
     <section
@@ -82,6 +89,22 @@ export function AboutSection() {
               title="A new-generation cleanroom engineering partner — built on transparency and technical depth"
               description="Cleanox is a newly established pharmaceutical cleanroom solutions company. We will not claim decades of history we do not have. What we offer instead: rigorous engineering practice, standards-aligned design, and full documentation on every engagement — so our work speaks before our track record does."
             />
+
+            {/* Stats row */}
+            <Reveal delay={0.1}>
+              <div className="mt-7 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
+                {aboutStats.map((s) => (
+                  <div
+                    key={s.label}
+                    className="rounded-xl border bg-secondary/60 p-3.5 text-center transition-colors hover:bg-secondary"
+                  >
+                    <p className="font-heading text-lg font-bold text-primary">{s.value}</p>
+                    <p className="mt-0.5 text-[0.72rem] font-medium text-muted-foreground">{s.label}</p>
+                  </div>
+                ))}
+              </div>
+            </Reveal>
+
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {pillars.map((p, i) => (
                 <Reveal key={p.title} delay={0.07 * i}>

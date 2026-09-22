@@ -49,7 +49,7 @@ export function QualitySection() {
     <section
       id="quality"
       aria-labelledby="quality-heading"
-      className="bg-haze py-16 md:py-24 dark:bg-card/40"
+      className="bg-haze py-16 md:py-24 dark:bg-[#0c1e30]"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
@@ -62,7 +62,7 @@ export function QualitySection() {
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {standards.map((s, i) => (
             <Reveal key={s.code} delay={(i % 3) * 0.06} className="h-full">
-              <article className="flex h-full flex-col rounded-xl border bg-card p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-md">
+              <article className="flex h-full flex-col rounded-xl border bg-card p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg dark:bg-[#0f2540]">
                 <div className="flex items-center gap-2">
                   <BadgeCheck className="size-4.5 shrink-0 text-primary" aria-hidden />
                   <h3 className="font-heading text-sm font-bold text-primary">{s.code}</h3>

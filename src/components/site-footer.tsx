@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Linkedin, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowUp, Linkedin, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -82,6 +82,22 @@ export function SiteFooter() {
               className="inline-flex size-9 items-center justify-center rounded-full bg-white/6 text-slate-400 transition-colors duration-150 hover:bg-brand-blue hover:text-white"
             >
               <Linkedin className="size-4" aria-hidden />
+            </a>
+            <a
+              href={`https://wa.me/${site.contact.whatsapp}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Cleanox on WhatsApp"
+              className="inline-flex size-9 items-center justify-center rounded-full bg-white/6 text-slate-400 transition-colors duration-150 hover:bg-[#25d366] hover:text-white"
+            >
+              <MessageCircle className="size-4" aria-hidden />
+            </a>
+            <a
+              href={`mailto:${site.contact.email}`}
+              aria-label="Email Cleanox"
+              className="inline-flex size-9 items-center justify-center rounded-full bg-white/6 text-slate-400 transition-colors duration-150 hover:bg-brand-teal hover:text-white"
+            >
+              <Mail className="size-4" aria-hidden />
             </a>
           </div>
         </div>
@@ -215,17 +231,16 @@ export function SiteFooter() {
       <Separator className="bg-white/8" />
 
       {/* Bottom bar */}
-      {/* Note: reduced bottom padding from 11.5rem to 6rem to account for smaller floating widgets */}
-      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 pb-28 pt-5 text-center sm:px-6 md:flex-row md:pb-6 md:text-left lg:px-8">
+      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 pb-20 pt-5 text-center sm:px-6 lg:flex-row lg:gap-6 lg:pb-6 lg:text-left lg:px-8">
         <p className="text-xs text-slate-500">
           © {year} {site.legalName}. All rights reserved.
         </p>
-        <p className="max-w-xl text-center text-xs leading-relaxed text-slate-600 md:text-left">
+        <p className="max-w-lg text-center text-xs leading-relaxed text-slate-600 lg:text-left">
           Standards referenced on this site (ISO 14644, EU GMP Annex 1, WHO GMP, Schedule M,
           USFDA cGMP) are design frameworks Cleanox aligns its engineering with — they are not
           certifications held by the company.
         </p>
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-4 lg:ml-auto">
           <LegalDialog trigger="Privacy Policy" title="Privacy Policy">
             <p>
               Cleanox respects your privacy. Information submitted through the enquiry form
@@ -263,6 +278,16 @@ export function SiteFooter() {
               launch.
             </p>
           </LegalDialog>
+          {/* Back to top */}
+          <button
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            aria-label="Back to top of page"
+            className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-400 transition-colors hover:border-white/20 hover:text-slate-200"
+          >
+            <ArrowUp className="size-3" aria-hidden />
+            Top
+          </button>
         </div>
       </div>
     </footer>
