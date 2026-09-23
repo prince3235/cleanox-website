@@ -52,7 +52,7 @@ export function SiteFooter() {
   const [year] = useState(() => new Date().getFullYear());
 
   return (
-    <footer className="mt-auto bg-navy-deep text-slate-300">
+    <footer className="mt-auto bg-navy-deep text-slate-300 print:hidden">
       {/* Top: sitemap columns */}
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1.2fr] lg:px-8">
         {/* Brand */}
