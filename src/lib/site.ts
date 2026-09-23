@@ -4,26 +4,26 @@
  * business details (see brief §9) before launch.
  */
 export const site = {
-  name: "Cleanox",
-  legalName: "Cleanox – Smart Clean Solutions",
+  name: "CleanOx",
+  legalName: "CleanOx",
   tagline: "Smart Clean Solutions",
-  domain: "https://cleanox.in", // PLACEHOLDER — update to real domain
+  domain: "https://cleanox.in",
   description:
-    "Cleanox engineers contamination-controlled environments for pharmaceutical and life-science manufacturing — cleanroom design, HVAC, HEPA filtration, modular panels and monitoring, delivered from concept to compliance.",
+    "CleanOx engineers contamination-controlled environments for pharmaceutical and life-science manufacturing — cleanroom design, HVAC, HEPA filtration, modular panels and monitoring, delivered from concept to compliance.",
   contact: {
-    phone: "+91 90000 00000", // PLACEHOLDER
-    phoneHref: "+919000000000", // PLACEHOLDER
-    whatsapp: "919000000000", // PLACEHOLDER
-    email: "info@cleanox.in", // PLACEHOLDER
-    careersEmail: "careers@cleanox.in", // PLACEHOLDER
+    phone: "+91 93270 40001",
+    phoneHref: "+919327040001",
+    whatsapp: "919327040001",
+    email: "cleanox26@gmail.com",
+    careersEmail: "cleanox26@gmail.com",
     address:
-      "Plot No. 00, Industrial Estate, Phase II, Mumbai, Maharashtra 400001, India", // PLACEHOLDER
-    city: "Mumbai",
+      "Plot No.87, Vibrant Mega Industrial Park, Vahelal Daskroi, Ahmedabad - 382330",
+    city: "Ahmedabad",
   },
   social: {
-    linkedin: "https://www.linkedin.com/company/cleanox", // PLACEHOLDER
+    linkedin: "https://www.linkedin.com/company/cleanox",
   },
-  founded: "2025",
+  founded: "2026",
 } as const;
 
 export const nav = [
